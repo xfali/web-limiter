@@ -5,6 +5,13 @@
 
 package user
 
+type Observer interface {
+	OnUserUpdate(d Details)
+	OnUserDisable(d Details)
+}
+
 type Service interface {
 	LoadUserByUsername(username string) (Details, error)
+
+	AddUserObserver(l Observer)
 }

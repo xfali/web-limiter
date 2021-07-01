@@ -5,15 +5,12 @@
 
 package user
 
+import "golang.org/x/time/rate"
+
 type Details interface {
-	GetLimit(url string) int
+	// 获得用户限制
+	// limit：每秒访问次数。burst：最大预留访问次数。
+	GetLimit(url string) *rate.Limiter
 
-	GetPassword() string
 	GetUsername() string
-
-	IsAccountNonExpired() bool
-	IsAccountNonLocked() bool
-	IsCredentialsNonExpired() bool
-
-	IsEnabled() bool
 }

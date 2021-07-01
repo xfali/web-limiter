@@ -7,9 +7,9 @@ package ginlimiter
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/xfali/web-limiter/user"
 	"golang.org/x/time/rate"
 	"math"
-	"neve-web-limiter/user"
 	"sync"
 )
 
@@ -50,14 +50,10 @@ func (f *Filter) FilterHandler(ctx *gin.Context) {
 }
 
 func (f *Filter) checkLimit(url string, user user.Details) bool {
-	limit := user.GetLimit(url)
-	if limit == Unlimited {
+	limiter := user.GetLimit(url)
+	if limiter == nil {
 		return true
 	} else {
-		limiter := f.getLimiter(user)
-		if limiter == nil || compareLimiter(limiter, limit) {
-			limiter = f.resetLimiter(user, limit)
-		}
 		return limiter.Allow()
 	}
 }
@@ -79,3 +75,17 @@ func (f *Filter) resetLimiter(user user.Details, limit int) *rate.Limiter {
 	f.limiters.Store(user.GetUsername(), limiter)
 	return limiter
 }
+
+//type AbstractUserService struct {
+//}
+//
+//func (s *AbstractUserService) LoadUserByUsername(ctx *gin.Context) (user.Details, error) {
+//
+//}
+//
+//func (s *AbstractUserService)() {
+//	limiter := f.getLimiter(user)
+//	if limiter == nil || compareLimiter(limiter, limit) {
+//		limiter = f.resetLimiter(user, limit)
+//	}
+//}
